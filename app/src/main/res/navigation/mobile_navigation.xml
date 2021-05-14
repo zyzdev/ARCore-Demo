@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.arcontroldemo.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_touchScreenPlaceModelFragment"
+            app:destination="@id/touchScreenPlaceModelFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_animateModelFragment"
+            app:destination="@id/animateModelFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_fingerControlModelFragment"
+            app:destination="@id/fingerControlModelFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/touchScreenPlaceModelFragment"
+        android:name="com.example.arcontroldemo.ui.touchscreenplacemodel.TouchScreenPlaceModelFragment"
+        android:label="TouchScreenPlaceModelFragment"
+        tools:layout="@layout/touch_screen_place_model_fragment"/>
+    <fragment
+        android:id="@+id/animateModelFragment"
+        android:name="com.example.arcontroldemo.ui.animatemodel.AnimateModelFragment"
+        android:label="AnimateModelFragment"
+        tools:layout="@layout/animate_model_fragment"/>
+    <fragment
+        android:id="@+id/fingerControlModelFragment"
+        android:name="com.example.arcontroldemo.ui.fingercontrolmodel.FingerControlModelFragment"
+        android:label="FingerControlModelFragment"
+        tools:layout="@layout/"/>
+
+</navigation>

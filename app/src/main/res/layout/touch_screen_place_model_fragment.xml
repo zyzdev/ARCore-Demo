@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="hasModel"
+            type="Boolean" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.touchscreenplacemodel.TouchScreenPlaceModelFragment">
+
+        <fragment
+            android:id="@+id/ar_fragment"
+            class="com.google.ar.sceneform.ux.ArFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/clean_all"
+            android:backgroundTint="@color/white"
+            app:srcCompat="@drawable/ic_clean_all"
+            app:tint="#DC0D0D"
+            app:borderWidth="0dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+</layout>
