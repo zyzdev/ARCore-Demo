@@ -67,9 +67,8 @@ class TouchScreenPlaceModelFragment : Fragment() {
                     it.setParent(null)
                 }
                 allNode.clear()
-                hide()
+                binding.cleanAll.visibility = View.GONE
             }
-            hide()
         }
         loadModel()
         initializeSceneView()
@@ -234,7 +233,7 @@ class TouchScreenPlaceModelFragment : Fragment() {
         node.renderable = modelRenderable
         node.setParent(arFragment.arSceneView.scene)
         allNode.add(node)
-        if(!binding.cleanAll.isShown)binding.cleanAll.show()
+        binding.cleanAll.visibility = View.VISIBLE
     }
 
     private fun configureSession() {

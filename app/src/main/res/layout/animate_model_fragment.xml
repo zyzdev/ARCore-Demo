@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Offset By"
+                android:text="Move By"
                 android:textColor="@color/purple_700"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -254,11 +254,15 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="32dp"
             android:checked="true"
-            android:text="@{!setting ? `打開設定` : `隱藏設定`}"
-            android:textColor="@color/purple_700"
+            android:text="@{!setting ? `Open settings` : `Close settings`}"
+            android:textColor="@android:color/white"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="隱藏設定" />
+            tools:text="Open settings" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reset"

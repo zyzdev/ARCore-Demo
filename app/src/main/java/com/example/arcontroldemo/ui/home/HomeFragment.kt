@@ -33,17 +33,17 @@ class HomeFragment : Fragment() {
                 arrayOf(
                     Triple(
                         "Touch screen to place a model",
-                        "Using your finger and hit screen anywhere to place a 3d model.",
+                        "Using your finger and tap screen anywhere to place a 3d model.",
                         R.id.action_navigation_home_to_touchScreenPlaceModelFragment
                     ),
                     Triple(
                         "Gesture Control Model",
-                        "Scan plane then tapplane to place a model, drag, scale, rotate model by gesture.",
+                        "Scan plane then tap plane to place a model. Start to drag, scale, rotate model by gesture.",
                         R.id.action_navigation_home_to_fingerControlModelFragment
                     ),
                     Triple(
                         "Animate Model",
-                        "Setting param to move, rotate or sle 3d model. Tap model to run animation of model.",
+                        "Setting parameter to move, rotate or scale 3d model. Tap model to run animation of model.",
                         R.id.action_navigation_home_to_animateModelFragment
                     ),
                 )
