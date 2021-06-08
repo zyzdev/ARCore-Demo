@@ -51,6 +51,10 @@ class AnimateModelFragment : Fragment() {
     private var animator: ModelAnimator? = null
     private var nextAnimation = 0
 
+    private var currentRColorValue = 0f
+    private var currentGColorValue = 0f
+    private var currentBColorValue = 0f
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -89,6 +93,24 @@ class AnimateModelFragment : Fragment() {
             val offset = it?.toString()?.toFloatOrNull() ?: 0f
             binding.zRotateValue = offset
         }
+        binding.rColor.addTextChangedListener {
+            val offset = (it?.toString()?.toIntOrNull() ?: 0).let { it1 ->
+                if (it1 < 0) 0 else if (it1 > 255) 255 else it1
+            }
+            binding.rColorValue = offset
+        }
+        binding.gColor.addTextChangedListener {
+            val offset = (it?.toString()?.toIntOrNull() ?: 0).let { it1 ->
+                if (it1 < 0) 0 else if (it1 > 255) 255 else it1
+            }
+            binding.gColorValue = offset
+        }
+        binding.bColor.addTextChangedListener {
+            val offset = (it?.toString()?.toIntOrNull() ?: 0).let { it1 ->
+                if (it1 < 0) 0 else if (it1 > 255) 255 else it1
+            }
+            binding.bColorValue = offset
+        }
         binding.scaleOffset.addTextChangedListener {
             val offset = it?.toString()?.toFloatOrNull() ?: 0f
             binding.scaleValue = offset
@@ -105,6 +127,13 @@ class AnimateModelFragment : Fragment() {
             node.localPosition = Vector3(0f, defYPos, defZPos)
             node.localScale = Vector3.one()
             initParam()
+            node.renderable?.material?.setFloat4(
+                "baseColor",
+                currentRColorValue,
+                currentGColorValue,
+                currentBColorValue,
+                1f
+            )
         }
         binding.run.setOnClickListener {
             if (binding.settingSwitch.isChecked) binding.settingSwitch.isChecked = false
@@ -185,6 +214,54 @@ class AnimateModelFragment : Fragment() {
                 }
                 start()
             }
+            ValueAnimator.ofFloat(currentRColorValue, binding.rColorValue!! / 255f).apply {
+                duration = binding.aniDurValue!!
+                interpolator = FastOutSlowInInterpolator()
+                addUpdateListener {
+                    val value = it.animatedValue as Float
+                    node.renderable?.material?.setFloat4(
+                        "baseColor",
+                        currentRColorValue,
+                        currentGColorValue,
+                        currentBColorValue,
+                        1f
+                    )
+                    currentRColorValue = value
+                }
+                start()
+            }
+            ValueAnimator.ofFloat(currentGColorValue, binding.gColorValue!! / 255f).apply {
+                duration = binding.aniDurValue!!
+                interpolator = FastOutSlowInInterpolator()
+                addUpdateListener {
+                    val value = it.animatedValue as Float
+                    node.renderable?.material?.setFloat4(
+                        "baseColor",
+                        currentRColorValue,
+                        currentGColorValue,
+                        currentBColorValue,
+                        1f
+                    )
+                    currentGColorValue = value
+                }
+                start()
+            }
+            ValueAnimator.ofFloat(currentBColorValue, binding.bColorValue!! / 255f).apply {
+                duration = binding.aniDurValue!!
+                interpolator = FastOutSlowInInterpolator()
+                addUpdateListener {
+                    val value = (it.animatedValue as Float)
+                    node.renderable?.material?.setFloat4(
+                        "baseColor",
+                        currentRColorValue,
+                        currentGColorValue,
+                        currentBColorValue,
+                        1f
+                    )
+                    currentBColorValue = value
+                }
+                start()
+            }
             ValueAnimator.ofFloat(0f, binding.scaleValue!!).apply {
                 duration = binding.aniDurValue!!
                 interpolator = FastOutSlowInInterpolator()
@@ -207,6 +284,12 @@ class AnimateModelFragment : Fragment() {
         binding.xRotateValue = 0f
         binding.yRotateValue = 0f
         binding.zRotateValue = 0f
+        currentRColorValue = 0.35686299999999999f
+        currentGColorValue = 0.60392199999999996f
+        currentBColorValue = 0.35686299999999999f
+        binding.rColorValue = (currentRColorValue * 255).toInt()
+        binding.gColorValue = (currentGColorValue * 255).toInt()
+        binding.bColorValue = (currentBColorValue * 255).toInt()
         binding.scaleValue = 0f
         binding.aniDurValue = 1500L
         binding.xOffset.setText("${binding.xOffsetValue}")
@@ -215,6 +298,9 @@ class AnimateModelFragment : Fragment() {
         binding.xRotate.setText("${binding.xRotateValue}")
         binding.yRotate.setText("${binding.yRotateValue}")
         binding.zRotate.setText("${binding.zRotateValue}")
+        binding.rColor.setText("${binding.rColorValue}")
+        binding.gColor.setText("${binding.gColorValue}")
+        binding.bColor.setText("${binding.bColorValue}")
         binding.scaleOffset.setText("${binding.scaleValue}")
         binding.animateDuration.setText("${binding.aniDurValue}")
     }

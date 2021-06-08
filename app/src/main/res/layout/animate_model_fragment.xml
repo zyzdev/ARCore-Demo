@@ -36,6 +36,18 @@
             type="Float" />
 
         <variable
+            name="rColorValue"
+            type="Integer" />
+
+        <variable
+            name="gColorValue"
+            type="Integer" />
+
+        <variable
+            name="bColorValue"
+            type="Integer" />
+
+        <variable
             name="scaleValue"
             type="Float" />
 
@@ -69,10 +81,9 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Move By"
+                android:layout_marginTop="8dp"
+                android:text="Offset By"
                 android:textColor="@color/purple_700"
-                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +94,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`X Offset: ` + xOffsetValue}"
                 app:layout_constraintEnd_toStartOf="@+id/y_offset_layout"
@@ -102,7 +112,6 @@
                 android:id="@+id/y_offset_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`Y Offset: ` + yOffsetValue}"
                 app:layout_constraintEnd_toStartOf="@+id/z_offset_layout"
@@ -121,7 +130,6 @@
                 android:id="@+id/z_offset_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`Z Offset: ` + zOffsetValue}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -140,10 +148,8 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="Rotate By"
                 android:textColor="@color/purple_700"
-                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -152,9 +158,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/x_rotate_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`X Rotate: ` + xRotateValue}"
                 app:layout_constraintEnd_toStartOf="@+id/y_rotate_layout"
@@ -173,7 +178,6 @@
                 android:id="@+id/y_rotate_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`Y Rotate: ` + yRotateValue}"
                 app:layout_constraintEnd_toStartOf="@+id/z_rotate_layout"
@@ -192,7 +196,6 @@
                 android:id="@+id/z_rotate_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="@{`Z Rotate: ` + zRotateValue}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -207,16 +210,82 @@
                     android:inputType="numberDecimal|numberSigned" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RGB To"
+                android:textColor="@color/purple_700"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/y_rotate_layout" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/r_color_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:hint="@{`R: ` + rColorValue}"
+                app:layout_constraintEnd_toStartOf="@+id/g_color_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/r_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/g_color_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:hint="@{`G: ` + gColorValue}"
+                app:layout_constraintEnd_toStartOf="@+id/b_color_layout"
+                app:layout_constraintStart_toEndOf="@+id/r_color_layout"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/g_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/b_color_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:hint="@{`B: ` + bColorValue}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/g_color_layout"
+                app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/b_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/animate_duration_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:hint="@{`Ani Dur: ` + aniDurValue}"
                 app:layout_constraintEnd_toStartOf="@+id/scale_offset_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/y_rotate_layout">
+                app:layout_constraintTop_toBottomOf="@+id/g_color_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/animate_duration"
@@ -231,12 +300,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:hint="@{`Scale By: ` + scaleValue}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/animate_duration_layout"
-                app:layout_constraintTop_toBottomOf="@+id/y_rotate_layout">
+                app:layout_constraintTop_toBottomOf="@+id/g_color_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/scale_offset"
@@ -254,15 +322,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="32dp"
             android:checked="true"
-            android:text="@{!setting ? `Open settings` : `Close settings`}"
-            android:textColor="@android:color/white"
-            android:shadowColor="@android:color/black"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="5"
+            android:text="@{!setting ? `打開設定` : `隱藏設定`}"
+            android:textColor="@color/purple_700"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="Open settings" />
+            tools:text="隱藏設定" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reset"
