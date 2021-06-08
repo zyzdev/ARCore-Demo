@@ -37,6 +37,11 @@ class HomeFragment : Fragment() {
                         R.id.action_navigation_home_to_touchScreenPlaceModelFragment
                     ),
                     Triple(
+                        "Model Indicator",
+                        "Present a arrow indicator at edge of screen while the model does not inside screen.",
+                        R.id.action_navigation_home_to_modelIndicatorFragment
+                    ),
+                    Triple(
                         "Gesture Control Model",
                         "Scan plane then tap plane to place a model. Start to drag, scale, rotate model by gesture.",
                         R.id.action_navigation_home_to_fingerControlModelFragment

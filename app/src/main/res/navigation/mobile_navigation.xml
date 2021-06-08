@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_navigation_home_to_fingerControlModelFragment"
             app:destination="@id/fingerControlModelFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_modelIndicatorFragment"
+            app:destination="@id/modelIndicatorFragment" />
     </fragment>
     <fragment
         android:id="@+id/touchScreenPlaceModelFragment"
@@ -34,6 +37,11 @@
         android:id="@+id/fingerControlModelFragment"
         android:name="com.example.arcontroldemo.ui.fingercontrolmodel.FingerControlModelFragment"
         android:label="FingerControlModelFragment"
-        tools:layout="@layout/"/>
+        tools:layout="@layout/finger_control_model_framgent"/>
+    <fragment
+        android:id="@+id/modelIndicatorFragment"
+        android:name="com.example.arcontroldemo.ui.modelindicator.ModelIndicatorFragment"
+        android:label="model_indicator_fragment"
+        tools:layout="@layout/model_indicator_fragment" />
 
 </navigation>
