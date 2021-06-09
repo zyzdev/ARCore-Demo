@@ -38,8 +38,8 @@ class HomeFragment : Fragment() {
                     ),
                     Triple(
                         "Model Indicator",
-                        "Present a arrow indicator at edge of screen while the model does not inside screen.",
-                        R.id.action_navigation_home_to_modelIndicatorFragment
+                        "Tap screen to place a model.\nYou can see a arrow indicator at edge of screen while the model does not inside screen.\nps:tap screen can re-place model for test any angle easily.",
+                                R.id.action_navigation_home_to_modelIndicatorFragment
                     ),
                     Triple(
                         "Gesture Control Model",

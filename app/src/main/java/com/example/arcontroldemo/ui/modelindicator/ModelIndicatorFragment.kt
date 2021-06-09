@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import com.example.arcontroldemo.R
 import com.example.arcontroldemo.databinding.ModelIndicatorFragmentBinding
+import com.example.arcontroldemo.helpers.TapHelper
 import com.example.arpositiontool.helpers.CameraPermissionHelper
 import com.example.arpositiontool.helpers.SnackbarHelper
 import com.google.ar.core.*
@@ -53,7 +54,10 @@ class ModelIndicatorFragment : Fragment() {
     private lateinit var indicatorHandlerThread: HandlerThread
     private lateinit var indicatorHandler: Handler
 
-    private var node: Node? = null
+    private var node: AnchorNode? = null
+   private val tapHelper by lazy {
+        TapHelper(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +67,7 @@ class ModelIndicatorFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.model_indicator_fragment, container, false)
         arFragment = childFragmentManager.findFragmentById(R.id.ar_fragment) as ArFragment
+        arFragment.arSceneView.setOnTouchListener(tapHelper)
         return binding.root
     }
 
@@ -194,11 +199,18 @@ class ModelIndicatorFragment : Fragment() {
             onUpdateFrame(
                 frameTime
             )
-            if (node == null) addNodeToScreen()
+
+/*            if (node == null) addNodeToScreen()
             node?.also {
                 indicatorHandler.post{
                     indicatorNode(it)
                 }
+            }*/
+            if(node == null && !messageSnackbarHelper.isShowing) {
+                messageSnackbarHelper.showMessage(requireActivity(), "Tap screen to place a model.")
+            }
+            node?.also {
+                indicatorNode(it)
             }
         }
     }
@@ -208,10 +220,12 @@ class ModelIndicatorFragment : Fragment() {
         config.focusMode = Config.FocusMode.AUTO
         config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
         config.planeFindingMode = Config.PlaneFindingMode.DISABLED
+        config.instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
         session.configure(config)
         arFragment.planeDiscoveryController.hide()
         arFragment.planeDiscoveryController.setInstructionView(null)
         initializeSceneView()
+        loadModel()
     }
 
     private fun addNodeToScreen() {
@@ -221,12 +235,12 @@ class ModelIndicatorFragment : Fragment() {
             .thenApply {
                 val scene = arFragment.arSceneView.scene
 
-                Pose.makeTranslation(0.0f, -0.25f, -5f).also { it1 ->
+                Pose.makeTranslation(0.0f, -0.75f, -5f).also { it1 ->
                     AnchorNode().apply {
                         anchor = session.createAnchor(it1)
                         //setParent(scene)
                         //localPosition = Vector3(0f, 0f, -2f)
-                        //localScale = Vector3(0.6f, 0.6f,0.6f)
+                        localScale = Vector3(0.6f, 0.6f,0.6f)
                         renderable = it
                         scene.addChild(this)
                         this@ModelIndicatorFragment.node = this
@@ -235,15 +249,106 @@ class ModelIndicatorFragment : Fragment() {
             }
     }
 
+    private lateinit var modelRenderable: ModelRenderable
+    private fun loadModel() {
+        ModelRenderable.builder().setRegistryId("modelFuture")
+            .setSource(context, Uri.parse("andy_dance.sfb"))
+            .build()
+            .thenApply {
+                modelRenderable = it
+            }
+    }
+
+    private fun addNode(point: InstantPlacementPoint) {
+        val scene = arFragment.arSceneView.scene
+        node?.also {
+            it.setParent(null)
+            it.anchor?.detach()
+        }
+        val anchor = point.createAnchor(point.pose)
+        node = AnchorNode()
+        node?.anchor = anchor
+        node?.renderable = modelRenderable
+        node?.setParent(scene)
+        if(messageSnackbarHelper.isShowing) messageSnackbarHelper.hide(requireActivity())
+    }
+
     private fun onUpdateFrame(frameTime: FrameTime) {
         arFragment.arSceneView.arFrame?.also { frame ->
+            while (tapHelper.didTap() && ::modelRenderable.isInitialized) {
+                // Use estimated distance from the user's device to the real world, based
+                // on expected user interaction and behavior.
+                val approximateDistanceMeters = 2.0f
+                val motionEvent = tapHelper.poll()
+                val results = frame.hitTestInstantPlacement(
+                    motionEvent.x,
+                    motionEvent.y,
+                    approximateDistanceMeters
+                )
+                if (results.isNotEmpty()) {
+                    results.forEach {
+                        Log.d(dTag, "2,hitTestResult:$it")
+                        val point = it.trackable as InstantPlacementPoint
+                        addNode(point)
+                    }
+                }
 
+            }
         }
     }
 
     private val height by lazy { binding.root.height }
     private val width by lazy { binding.root.width }
     private val center by lazy { Point(width / 2, height/ 2)}
+
+    /**
+     * get angle of each corner from screen center to each screen corner
+     * find Linear equation of screen center to each screen corner
+     * and find the angle by arctan
+     */
+    private val upDownAngle by lazy {
+        arrayListOf<Float>().apply {
+            var targetX = 0f
+            var targetY = 0f
+            var screenPoint = PointF(targetX, targetY)
+            //y = ax + b
+            var a = getSlope(center, screenPoint)
+            var angle = Math.toDegrees(atan(a).toDouble()).toFloat().let {
+                ((if(targetX < width / 2) it +180f else it) + 360) % 360
+            }
+            add(angle)
+
+            targetX = width.toFloat()
+            targetY = 0f
+            screenPoint = PointF(targetX, targetY)
+            //y = ax + b
+            a = getSlope(center, screenPoint)
+            angle = Math.toDegrees(atan(a).toDouble()).toFloat().let {
+                ((if(targetX < width / 2) it +180f else it) + 360) % 360
+            }
+            add(angle)
+
+            targetX = 0f
+            targetY = height.toFloat()
+            screenPoint = PointF(targetX, targetY)
+            //y = ax + b
+            a = getSlope(center, screenPoint)
+            angle = Math.toDegrees(atan(a).toDouble()).toFloat().let {
+                ((if(targetX < width / 2) it +180f else it) + 360) % 360
+            }
+            add(angle)
+
+            targetX = width.toFloat()
+            targetY = height.toFloat()
+            screenPoint = PointF(targetX, targetY)
+            //y = ax + b
+            a = getSlope(center, screenPoint)
+            angle = Math.toDegrees(atan(a).toDouble()).toFloat().let {
+                ((if(targetX < width / 2) it +180f else it) + 360) % 360
+            }
+            add(angle)
+        }
+    }
 
     private fun indicatorNode(node: Node) {
         val camera = arFragment.arSceneView.scene.camera
@@ -252,37 +357,48 @@ class ModelIndicatorFragment : Fragment() {
         val screenPos = camera.worldToScreenPoint(worldPos)
         val modelX = screenPos.x
         val modelY = screenPos.y
+        val screenPoint = PointF(modelX, modelY)
         //y = ax + b
-        val a = getSlope(center, PointF(modelX, modelY))
+        val a = getSlope(center, screenPoint)
         val b = modelY- a * modelX
         val angle = Math.toDegrees(atan(a).toDouble()).toFloat().let {
-            if(modelX < width / 2) it +180f else it
+            ((if(modelX < width / 2) it +180f else it) + 360) % 360
         }
         //detect model is at horizontal side or vertical de of screen
         if(!visibility) {
-            var x = 0f
-            var y = 0f
-            if(modelX < 0) {
-                x = 0f
-                y = b
-            } else if(modelX > width) {
-                //right
-                x = width.toFloat()
-                y = a * x + b
-            } else {
-                //should be up or below
+            val maxWidth = width - binding.indicator.width
+            val maxHeight = height - binding.indicator.height
+            var x: Float
+            var y: Float
+            //user [angle] to detect the model direction
+            if((angle >= upDownAngle[0] && angle < upDownAngle[1]) || (angle >= upDownAngle[2] && angle < upDownAngle[3])) {
+                //screen top-left to top-right and screen bottom-left to bottom-right
+                //up or below, consider y first then calculate x
                 if(modelY < 0) {
                     //up
-                    x = -b / a
                     y = 0f
-                } else if(modelY > height) {
+                } else if(modelY > maxHeight) {
                     //below
-                    x = -b / a
-                    y = height.toFloat()
+                    y = maxHeight.toFloat()
+                } else {
+                    y = modelY
                 }
+                x = (y - b) / a
+            } else {
+                //screen top-left to bottom-left and screen top-right to bottom-right
+                //right or left, consider x first then calculate y
+                if(modelX < 0) {
+                    x = 0f
+                    y = a * x + b
+                } else if(modelX > maxWidth) {
+                    //right
+                    x = maxWidth.toFloat()
+                } else x = modelX
+                y = a * x + b
             }
-            if(x >= width) x = (width -binding.indicator.width).toFloat() else if(x < 0) x = 0f
-            if(y >= height) y = (height - binding.indicator.height).toFloat() else if(y < 0) y = 0f
+            if(x > maxWidth) x = maxWidth.toFloat() else if(x < 0) x = 0f
+            if(y > maxHeight) y = maxHeight.toFloat() else if(y < 0) y = 0f
+            Log.d(dTag, "${node.name}, sc:$center, sp:$screenPoint, a:$a, b:$b, angle:$angle, x:$x, y:$y")
             binding.indicator.apply {
                 post {
                     this.visibility = if (visibility) View.GONE else View.VISIBLE
@@ -291,7 +407,6 @@ class ModelIndicatorFragment : Fragment() {
                     this.y = y
                 }
             }
-            Log.d(dTag, "${node.name}, sp:$screenPos, vis:$visibility, a:$a, angle:$angle, x:$x,y")
         } else {
             binding.indicator.apply {
                 if(this.visibility == View.VISIBLE) post { this.visibility = View.GONE }

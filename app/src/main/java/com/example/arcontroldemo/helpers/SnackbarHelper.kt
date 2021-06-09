@@ -15,6 +15,7 @@
 package com.example.arpositiontool.helpers
 
 import android.app.Activity
+import android.graphics.Color
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
 
@@ -72,6 +73,7 @@ class SnackbarHelper {
                 message,
                 Snackbar.LENGTH_INDEFINITE
             )
+            messageSnackbar!!.setTextColor(Color.LTGRAY)
             messageSnackbar!!.view.setBackgroundColor(BACKGROUND_COLOR)
             if (dismissBehavior != DismissBehavior.HIDE) {
                 messageSnackbar!!.setAction(
