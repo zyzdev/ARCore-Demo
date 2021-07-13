@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.arpositiontool.helpers
+package com.example.arcontroldemo.helpers
 
 import android.app.Activity
 import android.graphics.Color
@@ -76,8 +76,9 @@ class SnackbarHelper {
             messageSnackbar!!.setTextColor(Color.LTGRAY)
             messageSnackbar!!.view.setBackgroundColor(BACKGROUND_COLOR)
             if (dismissBehavior != DismissBehavior.HIDE) {
+                messageSnackbar
                 messageSnackbar!!.setAction(
-                    "Dismiss"
+                    activity.getString(android.R.string.ok)
                 ) { messageSnackbar!!.dismiss() }
                 if (dismissBehavior == DismissBehavior.FINISH) {
                     messageSnackbar!!.addCallback(

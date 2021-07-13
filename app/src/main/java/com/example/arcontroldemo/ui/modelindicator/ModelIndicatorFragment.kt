@@ -15,12 +15,12 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.arcontroldemo.R
+import com.example.arcontroldemo.customize.BaseFragment
 import com.example.arcontroldemo.databinding.ModelIndicatorFragmentBinding
 import com.example.arcontroldemo.helpers.TapHelper
 import com.example.arpositiontool.helpers.CameraPermissionHelper
-import com.example.arpositiontool.helpers.SnackbarHelper
+import com.example.arcontroldemo.helpers.SnackbarHelper
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.AnchorNode
@@ -36,7 +36,7 @@ import com.google.ar.sceneform.ux.ArFragment
 import kotlin.math.atan
 
 @RequiresApi(Build.VERSION_CODES.N)
-class ModelIndicatorFragment : Fragment() {
+class ModelIndicatorFragment : BaseFragment() {
 
     companion object {
         fun newInstance() = ModelIndicatorFragment()
@@ -50,7 +50,6 @@ class ModelIndicatorFragment : Fragment() {
 
     private val dTag = javaClass.simpleName
     private lateinit var binding: ModelIndicatorFragmentBinding
-    private lateinit var viewModel: ModelIndicatorViewModel
 
     private var installRequested = false
     private lateinit var session: Session
@@ -61,7 +60,7 @@ class ModelIndicatorFragment : Fragment() {
 
     private lateinit var indicatorHandlerThread: HandlerThread
     private lateinit var indicatorHandler: Handler
-
+    private lateinit var modelRenderable: ModelRenderable
     private var node: AnchorNode? = null
     private val tapHelper by lazy {
         TapHelper(requireContext())
@@ -74,14 +73,13 @@ class ModelIndicatorFragment : Fragment() {
 
         binding =
             DataBindingUtil.inflate(inflater, R.layout.model_indicator_fragment, container, false)
+        binding.info.setOnClickListener {
+            showHint(binding, getString(R.string.string_hint_easy_test_model_indicator))
+        }
+        binding.isTracking = false
         arFragment = childFragmentManager.findFragmentById(R.id.ar_fragment) as ArFragment
         arFragment.arSceneView.setOnTouchListener(tapHelper)
         return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ModelIndicatorViewModel::class.java)
     }
 
     override fun onResume() {
@@ -136,6 +134,7 @@ class ModelIndicatorFragment : Fragment() {
         indicatorHandlerThread = HandlerThread("indicatorHandlerThread").apply { start() }
         indicatorHandler = Handler(indicatorHandlerThread.looper)
         node = null
+        binding.isTracking = false
         if (shouldConfigureSession) {
             configureSession()
             shouldConfigureSession = false
@@ -145,6 +144,7 @@ class ModelIndicatorFragment : Fragment() {
         try {
             session.resume()
             arFragment.arSceneView.resume()
+            if (node == null) showHint(binding, getString(R.string.string_hint_tap_screen_place_model), false)
         } catch (e: CameraNotAvailableException) {
             // In some cases (such as another camera app launching) the camera may be given to
             // a different app instead. Handle this properly by showing a message and recreate the
@@ -180,6 +180,7 @@ class ModelIndicatorFragment : Fragment() {
 
     override fun onStop() {
         indicatorHandlerThread.quitSafely()
+        messageSnackbarHelper.hide(requireActivity())
         super.onStop()
     }
 
@@ -204,9 +205,6 @@ class ModelIndicatorFragment : Fragment() {
     private fun initializeSceneView() {
         arFragment.arSceneView.scene.addOnUpdateListener {
             onUpdateFrame()
-            if (node == null && !messageSnackbarHelper.isShowing) {
-                messageSnackbarHelper.showMessage(requireActivity(), "Tap screen to place a model.")
-            }
             node?.also {
                 indicatorNode(it)
             }
@@ -226,28 +224,6 @@ class ModelIndicatorFragment : Fragment() {
         loadModel()
     }
 
-    private fun addNodeToScreen() {
-        ModelRenderable.builder().setRegistryId("modelFuture")
-            .setSource(context, Uri.parse("andy_dance.sfb"))
-            .build()
-            .thenApply {
-                val scene = arFragment.arSceneView.scene
-
-                Pose.makeTranslation(0.0f, -0.75f, -5f).also { it1 ->
-                    AnchorNode().apply {
-                        anchor = session.createAnchor(it1)
-                        //setParent(scene)
-                        //localPosition = Vector3(0f, 0f, -2f)
-                        localScale = Vector3(0.6f, 0.6f, 0.6f)
-                        renderable = it
-                        scene.addChild(this)
-                        this@ModelIndicatorFragment.node = this
-                    }
-                }
-            }
-    }
-
-    private lateinit var modelRenderable: ModelRenderable
     private fun loadModel() {
         ModelRenderable.builder().setRegistryId("modelFuture")
             .setSource(context, Uri.parse("andy_dance.sfb"))
@@ -301,7 +277,7 @@ class ModelIndicatorFragment : Fragment() {
                         val tmp = Node()
                         tmp.localPosition = c
                         //for debug, to see box nodes, set DEBUG to true
-                        if(DEBUG) tmp.renderable = if (index == 0) r else r.makeCopy()
+                        if (DEBUG) tmp.renderable = if (index == 0) r else r.makeCopy()
                         //naming each box node, CENTER_NODE_NAME is for indicator ref
                         tmp.name = if (index == 0) CENTER_NODE_NAME else "${BOX_NODE_PREFIX}_$index"
                         node?.addChild(tmp)
@@ -309,7 +285,10 @@ class ModelIndicatorFragment : Fragment() {
                 }
         }
         node?.setParent(scene)
-        if (messageSnackbarHelper.isShowing) messageSnackbarHelper.hide(requireActivity())
+        if (binding.isTracking == false) {
+            hideHint(binding)
+            binding.isTracking = true
+        }
     }
 
     private fun onUpdateFrame() {

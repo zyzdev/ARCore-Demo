@@ -16,9 +16,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.example.arcontroldemo.R
+import com.example.arcontroldemo.customize.BaseFragment
 import com.example.arcontroldemo.databinding.AnimateModelFragmentBinding
 import com.example.arpositiontool.helpers.CameraPermissionHelper
-import com.example.arpositiontool.helpers.SnackbarHelper
+import com.example.arcontroldemo.helpers.SnackbarHelper
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.Node

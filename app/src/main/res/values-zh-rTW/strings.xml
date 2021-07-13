@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AR Control Demo</string>
+    <string name="title_touch_place_model">點擊螢幕，擺放模組。</string>
+    <string name="string_desc_touch_screen_place_model">點擊螢幕，擺放模組。</string>
+    <string name="title_model_indicator">模型方位指示器</string>
+    <string name="string_desc_model_indicator">點擊螢幕放置3D模型，當模型不在離開螢幕時，將會在螢幕邊緣出現，模型方位指示箭頭。\nps:再次點擊螢幕，可以重新擺放3D模型，藉以方便測試不同角度。</string>
+    <string name="title_gesture_control">手勢操作模型</string>
+    <string name="title_model_animation">模型動畫</string>
+    <string name="string_desc_model_animation">設定參數後，模型會以動畫得形式進行移動、旋轉或縮放。點擊模型可以運行模型自帶的動畫。</string>
+    <string name="string_desc_gesture_control">掃描出任意平面後，點擊平面可以放置3D模型。單指可以拖曳移動3D模型，雙指捏合可以縮放3D模型，雙指滑動可以旋轉3D模型。</string>
+    <string name="string_hint_tap_screen_place_model">點擊螢幕放置模型。</string>
+    <string name="string_hint_easy_test_model_indicator">點擊螢幕可以重放模型，以利測試不同角度。</string>
+    <string name="string_hint_scan_plane">掃描出任意平面，然後點擊平面放置模型。</string>
+    <string name="string_hint_gesture_control">單指可以拖曳移動3D模型，雙指捏合可以縮放3D模型，雙指滑動可以旋轉3D模型。</string>
+    <string name="string_hint">提示</string>
+    <string name="string_clear">清除</string>
+</resources>

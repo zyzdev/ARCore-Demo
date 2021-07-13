@@ -4,27 +4,26 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.arcontroldemo.R
+import com.example.arcontroldemo.customize.BaseFragment
+import com.example.arcontroldemo.customize.MyTransformableNode
 import com.example.arcontroldemo.databinding.FingerControlModelFramgentBinding
 import com.example.arpositiontool.helpers.CameraPermissionHelper
-import com.example.arpositiontool.helpers.SnackbarHelper
+import com.example.arcontroldemo.helpers.SnackbarHelper
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.*
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.ux.ArFragment
-import com.google.ar.sceneform.ux.TransformableNode
+import com.google.ar.sceneform.ux.*
 
 @RequiresApi(Build.VERSION_CODES.N)
-class FingerControlModelFragment : Fragment() {
+class FingerControlModelFragment : BaseFragment() {
 
     companion object {
         fun newInstance() = FingerControlModelFragment()
@@ -38,6 +37,7 @@ class FingerControlModelFragment : Fragment() {
     private val messageSnackbarHelper: SnackbarHelper = SnackbarHelper()
     private var modelRenderable: ModelRenderable? = null
     private var shouldConfigureSession = false
+    private var node:AnchorNode? = null
     private lateinit var arFragment: ArFragment
 
     override fun onCreateView(
@@ -51,6 +51,23 @@ class FingerControlModelFragment : Fragment() {
             false
         )
         binding.isTracking = false
+        binding.reset.setOnClickListener {
+            node?.apply {
+                val tmp = arrayListOf<Node>().apply {
+                    addAll(children)
+                }
+                MyTransformableNode(arFragment.transformationSystem).apply {
+                    renderable = modelRenderable
+                    setParent(node)
+                }
+                tmp.forEach {
+                    removeChild(it)
+                }
+            }
+        }
+        binding.hint.setOnClickListener {
+            showHint(binding, getString(R.string.string_hint_gesture_control))
+        }
         arFragment = (childFragmentManager.findFragmentById(R.id.ar_fragment) as ArFragment)
         loadModel()
 
@@ -58,19 +75,24 @@ class FingerControlModelFragment : Fragment() {
             if (modelRenderable == null) {
                 return@setOnTapArPlaneListener
             }
-
+            node?.apply {
+                anchor?.detach()
+                arFragment.arSceneView.scene.removeChild(this)
+            }
+            node = null
             // Create the Anchor.
             val anchor = hitResult.createAnchor()
             val anchorNode = AnchorNode(anchor)
             anchorNode.setParent(arFragment.arSceneView.scene)
-
+            node = anchorNode
             // Create the transformable andy and add it to the anchor.
-            TransformableNode(arFragment.transformationSystem).apply {
-                setParent(anchorNode)
+            MyTransformableNode(arFragment.transformationSystem).apply {
                 renderable = modelRenderable
-                scaleController.minScale = 0.1f
-                scaleController.maxScale = 2f
-                //select()
+                setParent(anchorNode)
+            }
+            if(binding.isTracking != true) {
+                binding.isTracking = true
+                hideHint(binding)
             }
         }
         return binding.root
@@ -128,13 +150,13 @@ class FingerControlModelFragment : Fragment() {
             configureSession()
             shouldConfigureSession = false
             arFragment.arSceneView.setupSession(session)
-            //addNodeToScreen()
         }
 
         // Note that order matters - see the note in onPause(), the reverse applies here.
         try {
             session.resume()
             arFragment.arSceneView.resume()
+            if(node == null) showHint(binding, getString(R.string.string_hint_scan_plane), false)
         } catch (e: CameraNotAvailableException) {
             // In some cases (such as another camera app launching) the camera may be given to
             // a different app instead. Handle this properly by showing a message and recreate the

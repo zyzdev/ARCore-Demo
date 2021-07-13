@@ -12,10 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.arcontroldemo.R
+import com.example.arcontroldemo.customize.BaseFragment
 import com.example.arcontroldemo.databinding.TouchScreenPlaceModelFragmentBinding
 import com.example.arcontroldemo.helpers.TapHelper
 import com.example.arpositiontool.helpers.CameraPermissionHelper
-import com.example.arpositiontool.helpers.SnackbarHelper
+import com.example.arcontroldemo.helpers.SnackbarHelper
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.InstantPlacementPoint
@@ -28,7 +29,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 
 @RequiresApi(Build.VERSION_CODES.N)
-class TouchScreenPlaceModelFragment : Fragment() {
+class TouchScreenPlaceModelFragment : BaseFragment() {
 
     companion object {
         fun newInstance() = TouchScreenPlaceModelFragment()
@@ -61,14 +62,17 @@ class TouchScreenPlaceModelFragment : Fragment() {
         )
         arFragment = (childFragmentManager.findFragmentById(R.id.ar_fragment) as ArFragment)
         arFragment.arSceneView.setOnTouchListener(tapHelper)
-        binding.cleanAll.apply {
-            setOnClickListener {
-                allNode.forEach {
-                    it.setParent(null)
-                }
-                allNode.clear()
-                binding.cleanAll.visibility = View.GONE
+        binding.cleanAll.setOnClickListener {
+            allNode.forEach {
+                it.setParent(null)
             }
+            allNode.clear()
+            binding.cleanAll.visibility = View.GONE
+            binding.hint.visibility = View.GONE
+            showHint(binding, getString(R.string.string_desc_touch_screen_place_model), false)
+        }
+        binding.hint.setOnClickListener {
+            showHint(binding, getString(R.string.string_desc_touch_screen_place_model))
         }
         loadModel()
         initializeSceneView()
@@ -128,7 +132,7 @@ class TouchScreenPlaceModelFragment : Fragment() {
             shouldConfigureSession = false
             arFragment.arSceneView.setupSession(session)
         }
-
+        if(allNode.size == 0) showHint(binding, getString(R.string.string_desc_touch_screen_place_model), false)
         // Note that order matters - see the note in onPause(), the reverse applies here.
         try {
             session.resume()
@@ -233,7 +237,9 @@ class TouchScreenPlaceModelFragment : Fragment() {
         node.renderable = modelRenderable
         node.setParent(arFragment.arSceneView.scene)
         allNode.add(node)
+        if(allNode.size == 1) hideHint(binding)
         binding.cleanAll.visibility = View.VISIBLE
+        binding.hint.visibility = View.VISIBLE
     }
 
     private fun configureSession() {

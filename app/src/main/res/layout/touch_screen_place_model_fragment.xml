@@ -7,7 +7,7 @@
 
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.touchscreenplacemodel.TouchScreenPlaceModelFragment">
@@ -22,12 +22,35 @@
             android:id="@+id/clean_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/white"
+            android:layout_gravity="top|center_horizontal"
+            android:contentDescription="@string/string_clear"
+            android:translationY="-8dp"
             android:visibility="gone"
+            app:backgroundTint="@android:color/white"
             app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:fabSize="mini"
+            app:layout_anchor="@id/hint"
+            app:layout_anchorGravity="top|center_horizontal"
             app:srcCompat="@drawable/ic_clean_all"
-            app:tint="#DC0D0D" />
-    </FrameLayout>
+            app:tint="#DC0D0D"
+            tools:visibility="visible" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/string_hint"
+            android:src="@drawable/ic_info"
+            android:visibility="gone"
+            app:backgroundTint="@android:color/white"
+            app:elevation="0dp"
+            app:fabSize="mini"
+            tools:visibility="visible" />
+
+        <include layout="@layout/hint_layout" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

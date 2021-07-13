@@ -3,4 +3,18 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_touch_place_model">Tap screen to place a model</string>
+    <string name="string_desc_touch_screen_place_model">Tap screen to place a model</string>
+    <string name="title_model_indicator">Model Indicator</string>
+    <string name="string_desc_model_indicator">Tap screen to place a model.You can see a arrow indicator at edge of screen while the model does not inside screen.\nps:tap screen can re-place model for test any angle easily.</string>
+    <string name="title_gesture_control">Gesture Control Model</string>
+    <string name="string_desc_gesture_control">Scan plane then tap plane to place a model. Moving model by single finger dragging, scale model by two finger pinch, rotate model by two finger dragging.</string>
+    <string name="title_model_animation">Model Animation</string>
+    <string name="string_desc_model_animation">Setting parameter to move, rotate or scale 3d model. Tap model to run animation of model.</string>
+    <string name="string_hint_tap_screen_place_model">Tap screent to place a model.</string>
+    <string name="string_hint_easy_test_model_indicator">To easy test different angle, tap screen can re-place model.</string>
+    <string name="string_hint_scan_plane">Scan plane then tap plane to place model.</string>
+    <string name="string_hint_gesture_control">Moving model by single finger dragging, scale model by two finger pinch, rotate model by two finger dragging.</string>
+    <string name="string_hint">Hint</string>
+    <string name="string_clear">Clear</string>
 </resources>

@@ -32,23 +32,23 @@ class HomeFragment : Fragment() {
             adapter = DemoListRecycleViewAdapter(
                 arrayOf(
                     Triple(
-                        "Touch screen to place a model",
-                        "Using your finger and tap screen anywhere to place a 3d model.",
+                        getString(R.string.title_touch_place_model),
+                        getString(R.string.string_desc_touch_screen_place_model),
                         R.id.action_navigation_home_to_touchScreenPlaceModelFragment
                     ),
                     Triple(
-                        "Model Indicator",
-                        "Tap screen to place a model.\nYou can see a arrow indicator at edge of screen while the model does not inside screen.\nps:tap screen can re-place model for test any angle easily.",
+                        getString(R.string.title_model_indicator),
+                        getString(R.string.string_desc_model_indicator),
                                 R.id.action_navigation_home_to_modelIndicatorFragment
                     ),
                     Triple(
-                        "Gesture Control Model",
-                        "Scan plane then tap plane to place a model. Start to drag, scale, rotate model by gesture.",
+                        getString(R.string.title_gesture_control),
+                        getString(R.string.string_desc_gesture_control),
                         R.id.action_navigation_home_to_fingerControlModelFragment
                     ),
                     Triple(
-                        "Animate Model",
-                        "Setting parameter to move, rotate or scale 3d model. Tap model to run animation of model.",
+                        getString(R.string.title_model_animation),
+                        getString(R.string.string_desc_model_animation),
                         R.id.action_navigation_home_to_animateModelFragment
                     ),
                 )
